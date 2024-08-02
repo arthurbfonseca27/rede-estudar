@@ -1,16 +1,17 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import { Button, Input, InputGroup, InputRightElement } from '@chakra-ui/react'
 import { IoMdEye, IoMdEyeOff } from 'react-icons/io'
 import { signIn } from 'next-auth/react'
 import { FcGoogle } from 'react-icons/fc'
-import Rede from '../../public/Rede.svg'
-import Link from 'next/link'
 import Image from 'next/image'
+import Rede from '../../../public/Rede.svg'
+import Link from 'next/link'
 import { Formik, Form, Field, ErrorMessage } from 'formik'
+import { useRouter } from 'next/navigation'
 import { EmailPasswordSchema } from '@/validation/EmailPasswordSchema'
-import router from 'next/router'
+import { initialFormStore } from '../../store/InitialForm/index'
 
 interface FormValues {
   email: string
@@ -18,13 +19,15 @@ interface FormValues {
 }
 
 export default function Home() {
-  const [show, setShow] = React.useState(false)
-  const [loginError, setLoginError] = React.useState('')
+  const [show, setShow] = useState(false)
   const handleClick = () => setShow(!show)
+  const router = useRouter()
+
+  const { email, password, setEmail, setPassword } = initialFormStore()
 
   const initialValues: FormValues = {
-    email: '',
-    password: '',
+    email,
+    password,
   }
 
   const onSubmit = async (
@@ -32,10 +35,10 @@ export default function Home() {
     { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void },
   ) => {
     try {
-      router.push('/home')
+      setEmail(values.email)
+      setPassword(values.password)
+      router.push('/signInPart2')
     } catch (error) {
-      setLoginError('E-mail ou senha incorretos')
-    } finally {
       setSubmitting(false)
     }
   }
@@ -51,10 +54,10 @@ export default function Home() {
             height={100}
           />
         </div>
-        <div className="relative bottom-8 flex flex-col gap-3 pb-4">
-          <p className="text-4xl font-bold">Entrar</p>
+        <div className="relative bottom-8 flex flex-col gap-3 py-4">
+          <p className="text-4xl font-bold">Cadastre-se</p>
           <p className="text-base text-[#969696]">
-            Por favor, faça login para entrar na sua conta.
+            Participe da maior rede de líderes do Brasil!
           </p>
         </div>
         <Formik
@@ -138,38 +141,37 @@ export default function Home() {
                   className="text-sm text-red-500"
                 />
               </div>
-              {loginError && (
-                <p className="text-sm text-red-500">{loginError}</p>
-              )}
-              <Button
-                type="submit"
-                isLoading={isSubmitting}
-                width="full"
-                variant="solid"
-                bg="#5C2D91"
-                color="#FFFFFF"
-                fontWeight="semibold"
-                fontSize="16px"
-                size="lg"
-                _hover={{ bg: '#5C2D91' }}
-                _focus={{
-                  borderColor: '#5C2D91',
-                  boxShadow: '0 0 0 1px #5C2D91',
-                }}
-                _active={{
-                  borderColor: '#5C2D91',
-                  boxShadow: '0 0 0 1px #5C2D91',
-                }}
-              >
-                Entrar
-              </Button>
+              <div className="pt-3">
+                <Button
+                  type="submit"
+                  isLoading={isSubmitting}
+                  width="full"
+                  variant="solid"
+                  bg="#5C2D91"
+                  color="#FFFFFF"
+                  fontWeight="semibold"
+                  fontSize="16px"
+                  size="lg"
+                  _hover={{ bg: '#5C2D91' }}
+                  _focus={{
+                    borderColor: '#5C2D91',
+                    boxShadow: '0 0 0 1px #5C2D91',
+                  }}
+                  _active={{
+                    borderColor: '#5C2D91',
+                    boxShadow: '0 0 0 1px #5C2D91',
+                  }}
+                >
+                  Continuar
+                </Button>
+              </div>
               <Button
                 rightIcon={<FcGoogle />}
                 variant="outline"
                 size="lg"
                 fontWeight="semibold"
                 fontSize="16px"
-                _hover={{ bg: 'transparent', borderColor: '#5C2D91' }}
+                _hover={{ bg: 'transparent' }}
                 _focus={{
                   borderColor: '#5C2D91',
                   boxShadow: '0 0 0 1px #5C2D91',
@@ -183,10 +185,10 @@ export default function Home() {
                 Entrar com Google
               </Button>
               <div className="flex flex-row items-center justify-center gap-1">
-                <span>Não tem uma conta?</span>
-                <Link href="/signInPart1">
+                <span>Já tem uma conta?</span>
+                <Link href="/">
                   <button className="font-semibold text-[#5C2D91] underline">
-                    Crie uma
+                    Entrar
                   </button>
                 </Link>
               </div>
