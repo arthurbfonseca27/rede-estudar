@@ -20,7 +20,7 @@ import { Formik, Form, Field, ErrorMessage } from 'formik'
 import { RegistrationSchema } from '@/validation/RegistrationSchema'
 import { useRouter } from 'next/navigation'
 import { finalFormStore } from '../../store/FinalForm/index'
-// import { initialFormStore } from '@/store/InitialForm'
+import { initialFormStore } from '@/store/InitialForm'
 
 interface State {
   id: number
@@ -83,7 +83,7 @@ export default function Home() {
     setBio,
   } = finalFormStore()
 
-  // const { email, password } = initialFormStore()
+  const { email, password } = initialFormStore()
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
@@ -159,7 +159,30 @@ export default function Home() {
       setSendEmail(values.sendEmail)
       setBio(values.bio)
 
-      router.push('/')
+      const response = await fetch('/api/user', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          password,
+          name,
+          occupation,
+          state,
+          city,
+          university,
+          course,
+          linkedin,
+          sendEmail,
+          bio,
+        }),
+      })
+      if (response.ok) {
+        router.push('/home')
+      } else {
+        console.error('Cadastro não realizado com sucesso')
+      }
     } catch (error) {
       console.error('Failed to submit form', error)
     } finally {
