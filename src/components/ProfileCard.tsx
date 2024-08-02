@@ -40,9 +40,6 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
 }) => {
   return (
     <div className="flex flex-col gap-1">
-      <p className="text-base text-xl font-medium">
-        Como as pessoas irão te encontrar
-      </p>
       <div className="w-[800px] rounded border border-[#141414] border-opacity-10 p-6">
         <div className="flex flex-row gap-6">
           <div>

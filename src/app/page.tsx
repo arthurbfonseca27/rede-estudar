@@ -8,9 +8,9 @@ import { FcGoogle } from 'react-icons/fc'
 import Rede from '../../public/Rede.svg'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Formik, Form, Field, ErrorMessage } from 'formik'
+import { Formik, Form, Field, ErrorMessage, FormikHelpers } from 'formik'
 import { EmailPasswordSchema } from '@/validation/EmailPasswordSchema'
-import router from 'next/router'
+import { useRouter } from 'next/navigation'
 
 interface FormValues {
   email: string
@@ -21,6 +21,7 @@ export default function Home() {
   const [show, setShow] = React.useState(false)
   const [loginError, setLoginError] = React.useState('')
   const handleClick = () => setShow(!show)
+  const router = useRouter()
 
   const initialValues: FormValues = {
     email: '',
@@ -29,15 +30,22 @@ export default function Home() {
 
   const onSubmit = async (
     values: FormValues,
-    { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void },
+    { setSubmitting }: FormikHelpers<FormValues>,
   ) => {
-    try {
-      router.push('/home')
-    } catch (error) {
-      setLoginError('E-mail ou senha incorretos')
-    } finally {
-      setSubmitting(false)
+    setSubmitting(true)
+    const signInData = await signIn('credentials', {
+      email: values.email,
+      password: values.password,
+      redirect: false,
+    })
+
+    if (signInData?.error) {
+      console.log(signInData.error)
+    } else {
+      router.push('/admin')
     }
+
+    setSubmitting(false)
   }
 
   return (

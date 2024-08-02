@@ -167,19 +167,32 @@ export default function Home() {
         body: JSON.stringify({
           email,
           password,
-          name,
-          occupation,
-          state,
-          city,
-          university,
-          course,
-          linkedin,
-          sendEmail,
-          bio,
+          name: values.name,
+          occupation: values.occupation,
+          state: values.state,
+          city: values.city,
+          university: values.university,
+          course: values.course,
+          linkedin: values.linkedin,
+          sendEmail: values.sendEmail,
+          bio: values.bio,
         }),
       })
+      console.log('Submitting values:', {
+        email,
+        password,
+        name: values.name,
+        occupation: values.occupation,
+        state: values.state,
+        city: values.city,
+        university: values.university,
+        course: values.course,
+        linkedin: values.linkedin,
+        sendEmail: values.sendEmail,
+        bio: values.bio,
+      })
       if (response.ok) {
-        router.push('/home')
+        router.push('/')
       } else {
         console.error('Cadastro não realizado com sucesso')
       }
@@ -601,6 +614,9 @@ export default function Home() {
         </Formik>
       </div>
       <div className="pb-8">
+        <p className="text-base text-xl font-medium">
+          Como as pessoas irão te encontrar
+        </p>
         <ProfileCard
           handleImageChange={handleImageChange}
           fileInputRef={fileInputRef}
